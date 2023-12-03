@@ -39,6 +39,8 @@ dependencies:
   permission_handler: ^11.0.1
   audio_waveforms: ^1.0.4
   audio_video_progress_bar: ^1.0.1
+  record: ^5.0.1
+  shared_preferences: ^2.2.2
   
 dev_dependencies:
   flutter_test:

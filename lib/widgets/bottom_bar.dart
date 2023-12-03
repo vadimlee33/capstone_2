@@ -1,4 +1,6 @@
 import 'package:captsone_2/main.dart';
+import 'package:captsone_2/pages/history_screen.dart';
+import 'package:captsone_2/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -14,7 +16,9 @@ class _BottomBarState extends State<BottomBar> {
   Widget build(BuildContext context) {
     return SalomonBottomBar(
       currentIndex: pageIndex,
-      onTap: (i) => setState(() => pageIndex = i),
+      onTap: (i) => setState(() {
+        pageIndex = i;
+      }),
       items: [
         /// Home
         SalomonBottomBarItem(
@@ -45,5 +49,20 @@ class _BottomBarState extends State<BottomBar> {
         ),
       ],
     );
+  }
+
+  Widget _getPage(int index) {
+    switch (index) {
+      case 0:
+        return HomeScreen(); // Replace with your home page widget
+      case 1:
+        return Container(); // Replace with your profile page widget
+      case 2:
+        return HistoryScreen(); // Replace with your history page widget
+      case 3:
+        return Container(); // Replace with your settings page widget
+      default:
+        return Container(); // Handle the default case as needed
+    }
   }
 }

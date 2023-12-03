@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:captsone_2/widgets/bottom_bar.dart';
+import 'package:captsone_2/pages/history_screen.dart';
+import 'package:captsone_2/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 int _pageIndex = 0;
 
@@ -20,6 +23,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -27,30 +31,32 @@ StreamController<DurationState> durationStateController =
     StreamController<DurationState>.broadcast();
 PlayerController playerController = PlayerController();
 RecorderController recorderController = RecorderController();
+final record = AudioRecorder();
 String myRecordPath = "";
 int? audioDuration;
 bool isPlaying = false;
 
-List<Widget> titleWidget() {
-  return [
-    const Text(
-      "Mood Wave",
-      style: TextStyle(fontSize: 32, color: Colors.white),
-    ),
-    const SizedBox(height: 20),
-  ];
-}
-
 class _HomeScreenState extends State<HomeScreen> {
   Widget _buildPage() {
     switch (_pageIndex) {
+      // Home
       case 0:
         return _buildPageMain();
+      // Profile
       case 1:
-        return _buildPageRecordMain();
+        return Container();
+      // History
       case 2:
-        return _buildPageRecording();
+        return HistoryScreen();
+      // Settings
       case 3:
+        return Container();
+      /////
+      case 4:
+        return _buildPageRecordMain();
+      case 5:
+        return _buildPageRecording();
+      case 6:
         return _buildPageStopped();
       default:
         return Container(); // Handle unknown index
@@ -102,12 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
   _buildPageMain() {
     return Column(
       children: [
-        ...titleWidget(),
         Image.asset('assets/images/mainLogo.PNG'),
         TextButton(
             onPressed: () {
               setState(() {
-                _pageIndex = 1;
+                _pageIndex = 4;
               });
             },
             child: Text("record"))
@@ -118,10 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
   _buildPageRecordMain() {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ...titleWidget(),
-          SizedBox(height: 50),
           Container(
             decoration: BoxDecoration(
               border: Border.all(
@@ -138,8 +142,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Permission granted, you can now use the microphone
                   print('Microphone permission granted');
                   await recorderController.record();
+                  DateTime now = DateTime.now();
+                  int milliseconds = now.millisecondsSinceEpoch;
+                  await record.start(
+                      const RecordConfig(encoder: AudioEncoder.wav),
+                      path:
+                          '/data/user/0/com.example.captsone_2/cache/$milliseconds.wav');
                   setState(() {
-                    _pageIndex = 2;
+                    _pageIndex = 5;
                   });
                 } else {
                   // Permission denied, show a dialog or handle it as needed
@@ -175,18 +185,17 @@ class _HomeScreenState extends State<HomeScreen> {
   _buildPageRecording() {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ...titleWidget(),
-          const SizedBox(height: 80),
           AudioWaveforms(
-            size: Size(MediaQuery.of(context).size.width, 40),
+            size: Size(MediaQuery.of(context).size.width, 120),
             enableGesture: true,
             recorderController: recorderController,
-            waveStyle: const WaveStyle(
+            waveStyle: WaveStyle(
               waveColor: Colors.red,
-              waveThickness: 1.5,
-              spacing: 2.0,
+              waveThickness: 2.5,
+              spacing: 3.0,
               extendWaveform: true,
               showMiddleLine: false,
             ),
@@ -200,8 +209,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: InkWell(
                   onTap: () async {
-                    final path = await recorderController.stop();
-                    myRecordPath = path!;
+                    final path2 = await record.stop();
+                    await recorderController.stop();
+                    myRecordPath = path2!;
                     print("Path: $myRecordPath");
                     await playerController.preparePlayer(
                       path: myRecordPath,
@@ -210,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     audioDuration =
                         await playerController.getDuration(DurationType.max);
                     setState(() {
-                      _pageIndex = 3;
+                      _pageIndex = 6;
                     });
                   },
                   child: Center(
@@ -240,10 +250,9 @@ class _HomeScreenState extends State<HomeScreen> {
   _buildPageStopped() {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ...titleWidget(),
-          const SizedBox(height: 80),
           StreamBuilder<DurationState>(
             stream: durationStateController.stream,
             builder: (context, snapshot) {
@@ -274,6 +283,15 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: 30),
           Row(
             children: [
+              InkWell(
+                onTap: () async {
+                  ///
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(5),
+                    child: const Icon(Icons.save_alt,
+                        color: Colors.white, size: 32)),
+              ),
               Expanded(
                 child: InkWell(
                   onTap: () async {
@@ -331,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   playerController = PlayerController();
                   setState(() {
                     //recorderCurrentDuration = Duration.zero;
-                    _pageIndex = 1;
+                    _pageIndex = 4;
                     audioDuration = 0;
                     isPlaying = false;
                     myRecordPath = "";
@@ -378,7 +396,42 @@ class _HomeScreenState extends State<HomeScreen> {
     // return const Scaffold(body: HomeContent());
     return Scaffold(
       backgroundColor: Color(0xFFA7CDFD),
-      bottomNavigationBar: const BottomBar(),
+      appBar: AppBarCustom(),
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: _pageIndex,
+        onTap: (i) => setState(() {
+          _pageIndex = i;
+        }),
+        items: [
+          /// Home
+          SalomonBottomBarItem(
+            icon: Icon(Icons.home),
+            title: Text("Home"),
+            selectedColor: Colors.purple,
+          ),
+
+          /// Likes
+          SalomonBottomBarItem(
+            icon: Icon(Icons.person),
+            title: Text("Profile"),
+            selectedColor: Colors.pink,
+          ),
+
+          /// Search
+          SalomonBottomBarItem(
+            icon: Icon(Icons.search),
+            title: Text("History"),
+            selectedColor: Colors.orange,
+          ),
+
+          /// Profile
+          SalomonBottomBarItem(
+            icon: Icon(Icons.settings),
+            title: Text("Settings"),
+            selectedColor: Colors.teal,
+          ),
+        ],
+      ),
       body: Padding(padding: const EdgeInsets.all(32), child: _buildPage()),
     );
   }
