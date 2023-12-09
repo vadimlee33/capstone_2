@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:captsone_2/pages/history_screen.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:http/http.dart' as http;
 
 int _pageIndex = 0;
 
@@ -44,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return _buildPageMain();
       // Profile
       case 1:
-        return Container();
+        return _buildPageExamples();
       // History
       case 2:
         return HistoryScreen();
@@ -105,6 +108,30 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<String?> sendAudioFile(String filePath, String serverUrl) async {
+    try {
+      var request =
+          http.MultipartRequest('POST', Uri.parse('$serverUrl/predict'))
+            ..files.add(await http.MultipartFile.fromPath('file', filePath));
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> result = json.decode(
+            await http.Response.fromStream(response)
+                .then((value) => value.body));
+
+        return result['emotion'];
+      } else {
+        print('Error: ${response.statusCode}');
+        return null;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return null;
+    }
+  }
+
   _buildPageMain() {
     return Column(
       children: [
@@ -115,7 +142,221 @@ class _HomeScreenState extends State<HomeScreen> {
                 _pageIndex = 4;
               });
             },
-            child: Text("record"))
+            child: Text("RECORD"))
+      ],
+    );
+  }
+
+  _buildPageExamples() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Center(
+            child: Text("Recording Examples", style: TextStyle(fontSize: 18))),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Sad"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Sad.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Angry"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Angry.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Disgust"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Disgust.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Fear"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Fear.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Happy"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Happy.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Neutral"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Neutral.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Text("Suprise"),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                AssetsAudioPlayer.newPlayer().open(
+                  Audio("assets/audio/Suprise.wav"),
+                  autoStart: true,
+                  showNotification: true,
+                );
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            )
+          ],
+        ),
       ],
     );
   }
@@ -286,6 +527,9 @@ class _HomeScreenState extends State<HomeScreen> {
               InkWell(
                 onTap: () async {
                   ///
+                  final String? result = await sendAudioFile(
+                      myRecordPath, "http://127.0.0.1:5000");
+                  print(result);
                 },
                 child: Container(
                     padding: const EdgeInsets.all(5),
