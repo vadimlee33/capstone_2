@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final Map<String, dynamic> result = json.decode(
             await http.Response.fromStream(response)
                 .then((value) => value.body));
-
+        print(result);
         return result['emotion'];
       } else {
         print('Error: ${response.statusCode}');
