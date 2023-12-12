@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 class HistoryScreen extends StatelessWidget {
   final List<String> dataList = [
-    'Data 1',
-    'Data 2',
-    'Data 3',
-    // Add more data here as needed
+    '23.11.22          suprise',
+    '23.11.20          fear',
+    '23.11.07          angry',
+    '23.10.26          angry',
+    '23.10.24          neutral',
+    '23.10.24          sad',
   ];
 
   HistoryScreen({super.key});
@@ -23,8 +25,6 @@ class HistoryScreen extends StatelessWidget {
             children: [
               Text('Your result description goes here...'),
               SizedBox(height: 10),
-              // Add your audio player widget here to play the audio file
-              // Example: AudioPlayerWidget(audioUrl: 'your_audio_file_url'),
               Text('Audio file goes here...'),
             ],
           ),
@@ -51,9 +51,14 @@ class HistoryScreen extends StatelessWidget {
           return Card(
             color: Color(0xFF82B4F3),
             child: ListTile(
+              trailing: Icon(
+                Icons.play_arrow,
+                size: 26,
+                color: Colors.white,
+              ),
               title: Text(
                 dataList[index],
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               onTap: () {
                 _showResultDialog(context, dataList[index]);

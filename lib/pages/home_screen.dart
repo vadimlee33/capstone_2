@@ -5,6 +5,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:captsone_2/pages/history_screen.dart';
+import 'package:captsone_2/util/app_icons.dart';
 import 'package:captsone_2/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -38,6 +39,7 @@ final record = AudioRecorder();
 String myRecordPath = "";
 int? audioDuration;
 bool isPlaying = false;
+String myEmotion = '';
 
 class _HomeScreenState extends State<HomeScreen> {
   Widget _buildPage() {
@@ -53,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return HistoryScreen();
       // Settings
       case 3:
-        return Container();
+        return _buildSettingsPage();
       /////
       case 4:
         return _buildPageRecordMain();
@@ -136,13 +138,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Image.asset('assets/images/mainLogo.PNG'),
+        const SizedBox(height: 24),
         TextButton(
             onPressed: () {
               setState(() {
                 _pageIndex = 4;
               });
             },
-            child: Text("RECORD"))
+            child: Text("RECORD", style: TextStyle(fontSize: 24)))
+      ],
+    );
+  }
+
+  _buildSettingsPage() {
+    return Column(
+      children: [
+        Image.asset('assets/images/mainLogo.PNG'),
+        const SizedBox(height: 24),
+        TextButton(
+            onPressed: () {},
+            child: Text("EXIT", style: TextStyle(fontSize: 24)))
       ],
     );
   }
@@ -157,8 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Sad"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("sad"),
+            const SizedBox(width: 12),
+            Text("Sad", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -186,8 +203,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Angry"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("angry"),
+            const SizedBox(width: 12),
+            Text("Angry", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -215,8 +234,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Disgust"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("disgust"),
+            const SizedBox(width: 12),
+            Text("Disgust", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -244,8 +265,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Fear"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("fear"),
+            const SizedBox(width: 12),
+            Text("Fear", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -273,8 +296,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Happy"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("happy"),
+            const SizedBox(width: 12),
+            Text("Happy", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -302,8 +327,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Neutral"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("neutral"),
+            const SizedBox(width: 12),
+            Text("Neutral", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -331,8 +358,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 24),
         Row(
           children: [
-            Text("Suprise"),
-            const SizedBox(width: 20),
+            AppIcons.getIcon("surprise"),
+            const SizedBox(width: 12),
+            Text("Suprise", style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 40),
             GestureDetector(
               onTap: () {
                 AssetsAudioPlayer.newPlayer().open(
@@ -364,10 +393,12 @@ class _HomeScreenState extends State<HomeScreen> {
   _buildPageRecordMain() {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Image.asset('assets/images/mainLogo.PNG'),
+          const SizedBox(height: 24),
           Container(
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Color(0xFF82B4F3),
@@ -397,11 +428,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   print('Microphone permission denied');
                 }
               },
-              child: Text("Start"),
+              child: const Text("Start", style: TextStyle(fontSize: 24)),
             ),
           ),
           SizedBox(height: 10),
           Container(
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Color(0xFF82B4F3),
@@ -415,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _pageIndex = 0;
                 });
               },
-              child: Text("Back"),
+              child: Text("Back", style: TextStyle(fontSize: 24)),
             ),
           ),
         ],
@@ -434,7 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
             enableGesture: true,
             recorderController: recorderController,
             waveStyle: WaveStyle(
-              waveColor: Colors.red,
+              waveColor: Colors.blue,
               waveThickness: 2.5,
               spacing: 3.0,
               extendWaveform: true,
@@ -466,16 +498,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Center(
                       child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
                     child: Icon(
                       Icons.stop,
                       color: Colors.white,
-                      size: 30,
+                      size: 36,
                     ),
                   )),
                 ),
@@ -502,10 +528,10 @@ class _HomeScreenState extends State<HomeScreen> {
               final buffered = durationState?.buffered ?? Duration.zero;
               final total = Duration(milliseconds: audioDuration!);
               return ProgressBar(
-                thumbColor: Colors.red,
-                baseBarColor: Colors.red,
-                progressBarColor: Colors.red,
-                timeLabelTextStyle: const TextStyle(color: Colors.red),
+                thumbColor: Colors.blue,
+                baseBarColor: Colors.blue,
+                progressBarColor: Colors.blue,
+                timeLabelTextStyle: const TextStyle(color: Colors.blue),
                 progress: progress,
                 buffered: buffered,
                 total: total,
@@ -528,8 +554,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () async {
                   ///
                   final String? result = await sendAudioFile(
-                      myRecordPath, "http://127.0.0.1:5000");
+                      myRecordPath, "http://192.168.71.98:5000");
                   print(result);
+                  setState(() {
+                    myEmotion = result!;
+                  });
                 },
                 child: Container(
                     padding: const EdgeInsets.all(5),
@@ -556,29 +585,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(
                       child: isPlaying == false
                           ? Container(
-                              width: 40,
-                              height: 40,
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
                               child: Icon(
                                 Icons.play_arrow_rounded,
                                 color: Colors.white,
-                                size: 30,
+                                size: 36,
                               ),
                             )
                           : Container(
-                              width: 40,
-                              height: 40,
-                              decoration: const BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
                               child: Icon(
                                 Icons.pause,
                                 color: Colors.white,
-                                size: 30,
+                                size: 36,
                               ),
                             )),
                 ),
@@ -597,21 +614,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     audioDuration = 0;
                     isPlaying = false;
                     myRecordPath = "";
+                    myEmotion = '';
                   });
                   setupPlayerListener();
                   // _setupRecorderListener();
                 },
                 child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.rectangle,
-                    ),
                     child: const Icon(Icons.delete,
-                        color: Colors.white, size: 32)),
+                        color: Colors.white, size: 36)),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 32),
+          if (myEmotion != '') Text(myEmotion, style: TextStyle(fontSize: 24)),
+          if (myEmotion != '') const SizedBox(height: 16),
+          if (myEmotion != '') AppIcons.getIcon(myEmotion),
         ],
       ),
     );
@@ -656,14 +673,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
           /// Likes
           SalomonBottomBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Profile"),
+            icon: Icon(Icons.info_outline),
+            title: Text("Tutorial"),
             selectedColor: Colors.pink,
           ),
 
           /// Search
           SalomonBottomBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.history),
             title: Text("History"),
             selectedColor: Colors.orange,
           ),
